@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title><%= @event&.name || "You're invited" %></title>
+    <meta name="description" content="<%= @event&.details.to_s.truncate(150) %>">
+    <meta property="og:title" content="<%= @event&.name %>">
+    <meta property="og:description" content="<%= @event&.details.to_s.truncate(150) %>">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <%= stylesheet_link_tag "invitation", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+    <%= yield :head %>
+  </head>
+  <body class="invitation-body">
+    <%= yield %>
+  </body>
+</html>

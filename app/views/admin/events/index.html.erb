@@ -1,0 +1,24 @@
+<h1>Events</h1>
+<p class="muted">Events are defined in code (see <code>db/seeds.rb</code> or the Rails console). Each one lives at <code>/&lt;slug&gt;</code>.</p>
+<table class="table">
+  <thead>
+    <tr><th>Event</th><th>When</th><th>Link</th><th>Attending</th><th>Headcount</th><th>Declined</th><th>Reminder</th></tr>
+  </thead>
+  <tbody>
+    <% @events.each do |e| %>
+      <tr>
+        <td><%= link_to e.name, admin_event_path(e) %></td>
+        <td><%= e.local_starts_at.strftime("%b %-d, %Y %-l:%M %p %Z") %></td>
+        <td><%= link_to "/#{e.slug}", invitation_path(e.slug), target: "_blank" %></td>
+        <td><%= e.attending_rsvps.count %></td>
+        <td><%= e.headcount %></td>
+        <td><%= e.rsvps.declined.count %></td>
+        <td>
+          <% if e.reminder_sent_at %>Sent <%= time_ago_in_words(e.reminder_sent_at) %> ago
+          <% elsif e.reminder_at %>Scheduled <%= e.reminder_at.in_time_zone(e.tz).strftime("%b %-d %-l:%M %p") %>
+          <% else %>—<% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

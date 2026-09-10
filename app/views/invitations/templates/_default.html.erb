@@ -1,0 +1,21 @@
+<%# Default invitation design. To customize an event, copy this file to
+    _<slug_with_underscores>.html.erb in this folder and go wild with your own HTML/CSS/JS. %>
+<main class="inv">
+  <section class="inv-hero">
+    <p class="inv-eyebrow">You're invited to</p>
+    <h1 class="inv-title"><%= event.name %></h1>
+    <p class="inv-when">
+      <%= event.local_starts_at.strftime("%A, %B %-d, %Y") %><br>
+      <%= event.local_starts_at.strftime("%-l:%M %p") %>
+      <% if event.location.present? %> · <%= event.location %><% end %>
+    </p>
+    <% if event.details.present? %>
+      <p class="inv-details"><%= simple_format(event.details) %></p>
+    <% end %>
+  </section>
+
+  <section class="inv-card">
+    <h2>RSVP</h2>
+    <%= render "invitations/rsvp_form", event: event, rsvp: rsvp %>
+  </section>
+</main>

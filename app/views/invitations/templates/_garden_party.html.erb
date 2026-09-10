@@ -1,0 +1,70 @@
+<%# Custom page for /garden-party — its own HTML, CSS and JS. %>
+<% content_for :head do %>
+  <style>
+    .gp { --ink: #1f2a1f; --leaf: #2f6b3a; --blush: #f6d7c8; --cream: #fbf7f0; }
+    .gp-body { background: radial-gradient(1200px 600px at 50% -10%, #dcefd9 0%, var(--cream) 60%); min-height: 100vh; }
+    .gp-hero { position: relative; text-align: center; padding: 6rem 1.5rem 3rem; overflow: hidden; }
+    .gp-hero h1 { font-family: "Cormorant Garamond", serif; font-weight: 600; font-size: clamp(2.8rem, 8vw, 5.5rem); line-height: 1; color: var(--leaf); margin: .5rem 0 1rem; }
+    .gp-hero .eyebrow { letter-spacing: .35em; text-transform: uppercase; font-size: .75rem; color: var(--ink); opacity: .7; }
+    .gp-hero .when { font-family: "Cormorant Garamond", serif; font-size: 1.5rem; color: var(--ink); }
+    .gp-countdown { display: flex; gap: 1.25rem; justify-content: center; margin: 2rem auto 0; }
+    .gp-countdown div { min-width: 4.5rem; }
+    .gp-countdown b { display: block; font-size: 2rem; font-family: "Cormorant Garamond", serif; color: var(--leaf); }
+    .gp-countdown span { font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; opacity: .6; }
+    .petal { position: absolute; top: -20px; width: 14px; height: 14px; border-radius: 60% 0 60% 0; background: var(--blush); opacity: .8; animation: fall linear infinite; pointer-events: none; }
+    @keyframes fall { to { transform: translateY(110vh) rotate(540deg); } }
+    .gp-card { max-width: 32rem; margin: 0 auto 5rem; padding: 2.5rem; background: #fff; border-radius: 1.25rem; box-shadow: 0 30px 60px -30px rgba(31,42,31,.35); }
+    .gp-card h2 { font-family: "Cormorant Garamond", serif; font-size: 2rem; margin: 0 0 1.25rem; text-align: center; color: var(--leaf); }
+    .gp .rsvp-submit { background: var(--leaf); }
+    .gp .rsvp-toggle__option input:checked + span { background: var(--leaf); color: #fff; }
+  </style>
+<% end %>
+
+<div class="gp gp-body">
+  <section class="gp-hero" id="petals">
+    <p class="eyebrow">Please join us for a</p>
+    <h1><%= event.name %></h1>
+    <p class="when">
+      <%= event.local_starts_at.strftime("%A, %B %-d") %> · <%= event.local_starts_at.strftime("%-l %p") %><br>
+      <%= event.location %>
+    </p>
+    <div class="gp-countdown" data-starts-at="<%= event.starts_at.iso8601 %>">
+      <div><b data-unit="days">0</b><span>days</span></div>
+      <div><b data-unit="hours">0</b><span>hours</span></div>
+      <div><b data-unit="minutes">0</b><span>min</span></div>
+    </div>
+  </section>
+
+  <section class="gp-card">
+    <h2>Will you join us?</h2>
+    <%= render "invitations/rsvp_form", event: event, rsvp: rsvp %>
+  </section>
+</div>
+
+<script>
+  // Falling petals
+  (function () {
+    var hero = document.getElementById("petals");
+    for (var i = 0; i < 18; i++) {
+      var p = document.createElement("i");
+      p.className = "petal";
+      p.style.left = Math.random() * 100 + "%";
+      p.style.animationDuration = 8 + Math.random() * 10 + "s";
+      p.style.animationDelay = -Math.random() * 12 + "s";
+      p.style.transform = "scale(" + (0.6 + Math.random()) + ")";
+      hero.appendChild(p);
+    }
+  })();
+  // Countdown
+  (function () {
+    var el = document.querySelector(".gp-countdown");
+    var target = new Date(el.dataset.startsAt).getTime();
+    function tick() {
+      var d = Math.max(0, target - Date.now());
+      el.querySelector('[data-unit="days"]').textContent = Math.floor(d / 864e5);
+      el.querySelector('[data-unit="hours"]').textContent = Math.floor(d / 36e5) % 24;
+      el.querySelector('[data-unit="minutes"]').textContent = Math.floor(d / 6e4) % 60;
+    }
+    tick(); setInterval(tick, 30000);
+  })();
+</script>

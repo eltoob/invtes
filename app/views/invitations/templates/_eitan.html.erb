@@ -1,0 +1,153 @@
+<%# Custom page for /eitan — a pajama "sleepunder" under the stars. %>
+<% content_for :title, "#{event.name} 🌙" %>
+<% content_for :head do %>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    .eb { --night: #0f1b3d; --night-2: #1d2b64; --moon: #ffe28a; --star: #fff7d6; --ink: #1a1f36; --pink: #ff8fab; --mint: #8be9d4; }
+    .eb-body { background: linear-gradient(180deg, #0a1230 0%, var(--night) 45%, var(--night-2) 100%); min-height: 100vh; font-family: "Fredoka", system-ui, sans-serif; color: #fff; position: relative; overflow-x: hidden; }
+    .eb-sky { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .star { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: var(--star); animation: twinkle ease-in-out infinite; }
+    @keyframes twinkle { 0%, 100% { opacity: .25; transform: scale(.8); } 50% { opacity: 1; transform: scale(1.3); } }
+    .moon { position: absolute; top: 3rem; right: 8%; width: 110px; height: 110px; border-radius: 50%; background: var(--moon); box-shadow: 0 0 60px 20px rgba(255,226,138,.35); animation: float 6s ease-in-out infinite; }
+    .moon::after { content: ""; position: absolute; top: -12px; left: -18px; width: 100px; height: 100px; border-radius: 50%; background: #0f1b3d; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+    .eb-hero { position: relative; text-align: center; padding: 6rem 1.5rem 2.5rem; }
+    .eb-hero .eyebrow { letter-spacing: .3em; text-transform: uppercase; font-size: .8rem; color: var(--mint); font-weight: 600; }
+    .eb-hero h1 { font-size: clamp(2.6rem, 9vw, 5.5rem); line-height: 1; margin: .5rem 0 .75rem; font-weight: 700; text-shadow: 0 6px 30px rgba(0,0,0,.35); }
+    .eb-hero h1 span { color: var(--moon); }
+    .eb-hero .when { font-size: 1.35rem; line-height: 1.6; opacity: .95; }
+    .eb-hero .when a { color: var(--mint); text-decoration: none; border-bottom: 2px dotted var(--mint); }
+    .eb-badges { display: flex; flex-wrap: wrap; gap: .6rem; justify-content: center; margin-top: 1.5rem; }
+    .eb-badges span { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25); border-radius: 999px; padding: .45rem 1rem; font-size: .95rem; }
+    .eb-countdown { display: flex; gap: 1.25rem; justify-content: center; margin: 2rem auto 0; }
+    .eb-countdown div { min-width: 4.5rem; background: rgba(255,255,255,.08); border-radius: 1rem; padding: .75rem .5rem; }
+    .eb-countdown b { display: block; font-size: 2.2rem; color: var(--moon); line-height: 1; }
+    .eb-countdown span { font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; opacity: .7; }
+    .eb-card { position: relative; max-width: 32rem; margin: 0 auto 5rem; padding: 2.5rem; background: #fff; color: var(--ink); border-radius: 1.5rem; box-shadow: 0 40px 80px -30px rgba(0,0,0,.6); }
+    .eb-card h2 { font-size: 2rem; margin: 0 0 .25rem; text-align: center; color: var(--night); }
+    .eb-card .sub { text-align: center; margin: 0 0 1.5rem; color: #5b6078; }
+    .eb-card .rsvp-submit { background: var(--night); }
+    .eb-card .rsvp-toggle__option input:checked + span { background: var(--night); color: #fff; }
+    .eb-footer { position: relative; text-align: center; padding: 0 1.5rem 3rem; opacity: .7; font-size: .9rem; }
+
+    /* Intro — the screen fills up with beds, then they clear away to reveal the page */
+    .eb-intro { position: fixed; inset: 0; z-index: 50; background: #0a1230; overflow: hidden; }
+    .eb-intro__bed { position: absolute; font-size: var(--size, 3rem); line-height: 1; transform: translateY(-120vh) rotate(var(--rot, 0deg));
+      animation: bed-drop .7s cubic-bezier(.3,1.4,.6,1) var(--delay, 0s) forwards; filter: drop-shadow(0 6px 10px rgba(0,0,0,.5)); }
+    @keyframes bed-drop { to { transform: translateY(0) rotate(var(--rot, 0deg)); } }
+    .eb-intro.is-clearing { animation: intro-clear .9s ease-in forwards; }
+    @keyframes intro-clear { to { transform: translateY(110vh); opacity: .6; } }
+    .eb-intro.is-done { display: none; }
+    @media (prefers-reduced-motion: reduce) { .eb-intro { display: none; } }
+
+    /* Beds, pillows and friends drifting down through the night sky */
+    .eb-fall { position: absolute; top: -12vh; font-size: var(--size, 2rem); opacity: .55;
+      filter: drop-shadow(0 8px 12px rgba(0,0,0,.4)); animation: fall linear infinite; will-change: transform; }
+    @keyframes fall {
+      0%   { transform: translateY(0) rotate(-10deg); }
+      50%  { transform: translateY(60vh) translateX(var(--sway, 20px)) rotate(10deg); }
+      100% { transform: translateY(125vh) rotate(-10deg); }
+    }
+  </style>
+<% end %>
+
+<div class="eb-intro" id="intro" aria-hidden="true"></div>
+
+<div class="eb eb-body">
+  <div class="eb-sky" id="sky"><div class="moon"></div></div>
+
+  <section class="eb-hero">
+    <h1>Eitan's <span>Birthday</span><br>Sleepunder</h1>
+    <p class="when">
+      <%= event.local_starts_at.strftime("%A, %B %-d") %> · <%= event.local_starts_at.strftime("%-l %p") %><% if event.local_ends_at %> – <%= event.local_ends_at.strftime("%-l %p") %><% end %><br>
+      <a href="https://maps.google.com/?q=<%= u(event.location) %>" target="_blank" rel="noopener"><%= event.location %></a>
+    </p>
+    <div class="eb-badges">
+      <span>🍕 Pizza</span><span>🎮 Games</span><span>🎬 Movie</span><span>🎂 Cake</span><span>🧸 Bring a pillow</span>
+    </div>
+    <div class="eb-countdown" data-starts-at="<%= event.starts_at.iso8601 %>">
+      <div><b data-unit="days">0</b><span>days</span></div>
+      <div><b data-unit="hours">0</b><span>hours</span></div>
+      <div><b data-unit="minutes">0</b><span>min</span></div>
+      <div><b data-unit="seconds">0</b><span>sec</span></div>
+    </div>
+  </section>
+
+  <section class="eb-card">
+    <h2>Can you make it?</h2>
+    <p class="sub"><%= event.details %></p>
+    <%= render "invitations/rsvp_form", event: event, rsvp: rsvp %>
+  </section>
+
+  <p class="eb-footer">Questions? Reply to your confirmation text and we'll get right back to you.</p>
+</div>
+
+<%= render "invitations/music", src: "eitan-bg.m4a", volume: 0.2 %>
+
+<script>
+  // Twinkling stars
+  (function () {
+    var sky = document.getElementById("sky");
+    for (var i = 0; i < 70; i++) {
+      var s = document.createElement("i");
+      s.className = "star";
+      s.style.left = Math.random() * 100 + "%";
+      s.style.top = Math.random() * 100 + "%";
+      s.style.animationDuration = 2 + Math.random() * 4 + "s";
+      s.style.animationDelay = -Math.random() * 4 + "s";
+      s.style.transform = "scale(" + (0.5 + Math.random() * 1.2) + ")";
+      sky.appendChild(s);
+    }
+    // Beds, pillows and sleepover friends falling through the sky
+    var things = ["🛏️", "🛏️", "🛏️", "🧸", "🌙", "⭐", "🍕", "🎮"];
+    for (var j = 0; j < 22; j++) {
+      var f = document.createElement("span");
+      f.className = "eb-fall";
+      f.textContent = things[j % things.length];
+      f.style.left = Math.random() * 100 + "%";
+      f.style.setProperty("--size", 1.4 + Math.random() * 2 + "rem");
+      f.style.setProperty("--sway", (Math.random() * 80 - 40) + "px");
+      f.style.animationDuration = 12 + Math.random() * 14 + "s";
+      f.style.animationDelay = -Math.random() * 26 + "s";
+      sky.appendChild(f);
+    }
+  })();
+  // Intro: rain beds until the screen is full, then let the pile drop away
+  (function () {
+    var intro = document.getElementById("intro");
+    var cell = 72, cols = Math.ceil(window.innerWidth / cell) + 1, rows = Math.ceil(window.innerHeight / cell) + 1;
+    var fillTime = 1800, last = 0;
+    for (var r = rows - 1; r >= 0; r--) {
+      for (var c = 0; c < cols; c++) {
+        var b = document.createElement("span");
+        b.className = "eb-intro__bed";
+        b.textContent = "🛏️";
+        b.style.left = (c * cell + (Math.random() * 20 - 10)) + "px";
+        b.style.top = (r * cell + (Math.random() * 16 - 8)) + "px";
+        b.style.setProperty("--size", 2.6 + Math.random() * 1.6 + "rem");
+        b.style.setProperty("--rot", (Math.random() * 30 - 15) + "deg");
+        // bottom rows land first so the pile stacks upward
+        var delay = ((rows - 1 - r) / rows) * fillTime + Math.random() * 250;
+        b.style.setProperty("--delay", delay + "ms");
+        last = Math.max(last, delay);
+        intro.appendChild(b);
+      }
+    }
+    setTimeout(function () { intro.classList.add("is-clearing"); }, last + 1100);
+    setTimeout(function () { intro.classList.add("is-done"); }, last + 2100);
+  })();
+  // Countdown
+  (function () {
+    var el = document.querySelector(".eb-countdown");
+    var target = new Date(el.dataset.startsAt).getTime();
+    function tick() {
+      var d = Math.max(0, target - Date.now());
+      el.querySelector('[data-unit="days"]').textContent = Math.floor(d / 864e5);
+      el.querySelector('[data-unit="hours"]').textContent = Math.floor(d / 36e5) % 24;
+      el.querySelector('[data-unit="minutes"]').textContent = Math.floor(d / 6e4) % 60;
+      el.querySelector('[data-unit="seconds"]').textContent = Math.floor(d / 1e3) % 60;
+    }
+    tick(); setInterval(tick, 1000);
+  })();
+</script>

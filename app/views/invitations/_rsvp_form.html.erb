@@ -1,0 +1,46 @@
+<%# Drop this partial into any event template. Posts JSON to /<slug>/rsvp. %>
+<div class="rsvp" data-controller="rsvp" data-rsvp-url-value="<%= invitation_rsvp_path(event.slug) %>">
+  <%= form_with model: rsvp, url: invitation_rsvp_path(event.slug), html: { class: "rsvp-form", "data-rsvp-target": "form", "data-action": "submit->rsvp#submit" } do |f| %>
+    <div class="rsvp-toggle" role="radiogroup" aria-label="Will you attend?">
+      <label class="rsvp-toggle__option">
+        <%= f.radio_button :attending, true, checked: true, "data-action": "change->rsvp#toggleGuests" %>
+        <span>Joyfully accept</span>
+      </label>
+      <label class="rsvp-toggle__option">
+        <%= f.radio_button :attending, false, "data-action": "change->rsvp#toggleGuests" %>
+        <span>Regretfully decline</span>
+      </label>
+    </div>
+
+    <div class="rsvp-field">
+      <%= f.label :name, "Your name" %>
+      <%= f.text_field :name, required: true, autocomplete: "name", placeholder: "Jane Doe" %>
+    </div>
+
+    <div class="rsvp-field">
+      <%= f.label :phone, "Mobile number" %>
+      <%= f.telephone_field :phone, required: true, autocomplete: "tel", inputmode: "tel", placeholder: "(555) 123-4567" %>
+      <small>We'll text you a confirmation and a reminder the day before.</small>
+    </div>
+
+    <div class="rsvp-field" data-rsvp-target="guests">
+      <%= f.label :guests_count, "Guests you're bringing" %>
+      <%= f.select :guests_count, (0..Rsvp::MAX_GUESTS).map { |n| [ n.zero? ? "Just me" : "+#{n}", n ] } %>
+    </div>
+
+    <div class="rsvp-field">
+      <%= f.label :note, "Anything we should know? (optional)" %>
+      <%= f.text_area :note, rows: 2, placeholder: "Dietary needs, a song request..." %>
+    </div>
+
+    <p class="rsvp-error" data-rsvp-target="error" hidden></p>
+    <button type="submit" class="rsvp-submit" data-rsvp-target="submit">Send RSVP</button>
+  <% end %>
+
+  <div class="rsvp-success" data-rsvp-target="success" hidden>
+    <div class="rsvp-success__mark">✓</div>
+    <h3 data-rsvp-target="successTitle"></h3>
+    <p data-rsvp-target="successMessage"></p>
+    <button type="button" class="rsvp-link" data-action="click->rsvp#reset">Change my answer</button>
+  </div>
+</div>

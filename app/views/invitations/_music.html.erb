@@ -1,0 +1,12 @@
+<%# Floating background-music widget. Usage: render "invitations/music", src: "eitan-bg.m4a", volume: 0.2 %>
+<% volume = local_assigns.fetch(:volume, 0.2) %>
+<div class="bg-music" data-controller="music" data-music-volume-value="<%= volume %>" data-music-storage-key-value="bg-music:<%= @event&.slug %>">
+  <audio data-music-target="audio" preload="auto" loop playsinline>
+    <source src="<%= asset_path(src) %>" type="audio/mp4">
+  </audio>
+  <button type="button" class="bg-music__toggle" data-music-target="toggle" data-action="music#toggle" aria-label="Play music">▶</button>
+  <label class="bg-music__volume">
+    <span class="sr-only">Music volume</span>
+    <input type="range" min="0" max="100" step="1" value="<%= (volume * 100).round %>" data-music-target="volume" data-action="input->music#changeVolume">
+  </label>
+</div>

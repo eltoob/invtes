@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+# Runs Puma with Solid Queue embedded, so background jobs and the
+# recurring reminder scheduler run in the same process during development.
+ENV["SOLID_QUEUE_IN_PUMA"] ||= "1"
+exec "./bin/rails", "server", *ARGV

@@ -1,0 +1,16 @@
+# Recurring jobs run by Solid Queue's scheduler.
+# The reminder sweep looks for events whose reminder_at has passed and
+# fans out one SMS job per attending RSVP.
+
+development:
+  send_event_reminders:
+    class: SendEventRemindersJob
+    schedule: every 5 minutes
+
+production:
+  send_event_reminders:
+    class: SendEventRemindersJob
+    schedule: every 5 minutes
+  clear_solid_queue_finished_jobs:
+    command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
+    schedule: every hour at minute 12

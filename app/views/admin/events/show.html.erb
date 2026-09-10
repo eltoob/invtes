@@ -1,0 +1,62 @@
+<p><%= link_to "← All events", admin_events_path %></p>
+<div class="page-head">
+  <div>
+    <h1><%= @event.name %></h1>
+    <p class="muted">
+      <%= @event.local_starts_at.strftime("%A, %B %-d, %Y · %-l:%M %p %Z") %>
+      <% if @event.location.present? %> · <%= @event.location %><% end %>
+      · <%= link_to "/#{@event.slug}", invitation_path(@event.slug), target: "_blank" %>
+    </p>
+  </div>
+  <div class="actions">
+    <%= link_to "Export CSV", export_admin_event_path(@event, format: :csv), class: "btn" %>
+    <%= button_to "Send reminders now", send_reminders_admin_event_path(@event), class: "btn btn-primary",
+          form: { data: { turbo_confirm: "Text a reminder to every attending guest who hasn't received one?" } } %>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat"><b><%= @attending.count %></b><span>Attending</span></div>
+  <div class="stat"><b><%= @event.headcount %></b><span>Total headcount</span></div>
+  <div class="stat"><b><%= @attending.sum(:guests_count) %></b><span>Plus-ones</span></div>
+  <div class="stat"><b><%= @declined.count %></b><span>Declined</span></div>
+  <div class="stat">
+    <b><%= @attending.where.not(reminder_sent_at: nil).count %>/<%= @attending.count %></b>
+    <span>Reminders sent</span>
+  </div>
+</div>
+
+<p class="muted">
+  Reminder texts go out automatically at
+  <strong><%= @event.reminder_at&.in_time_zone(@event.tz)&.strftime("%A, %B %-d at %-l:%M %p %Z") || "—" %></strong>
+  <% if @event.reminder_sent_at %>(sent <%= time_ago_in_words(@event.reminder_sent_at) %> ago)<% end %>.
+</p>
+
+<h2>Responses (<%= @rsvps.count %>)</h2>
+<% if @rsvps.empty? %>
+  <p class="muted">No RSVPs yet.</p>
+<% else %>
+  <table class="table">
+    <thead>
+      <tr><th>Name</th><th>Phone</th><th>Answer</th><th>Guests</th><th>Note</th><th>RSVP'd</th><th>Texts</th><th></th></tr>
+    </thead>
+    <tbody>
+      <% @rsvps.each do |r| %>
+        <tr class="<%= r.attending? ? 'yes' : 'no' %>">
+          <td><%= r.name %></td>
+          <td><%= r.formatted_phone %></td>
+          <td><span class="pill <%= r.attending? ? 'pill-yes' : 'pill-no' %>"><%= r.attending? ? "Attending" : "Declined" %></span></td>
+          <td><%= r.attending? ? (r.guests_count.zero? ? "—" : "+#{r.guests_count}") : "" %></td>
+          <td class="note"><%= r.note %></td>
+          <td><%= r.created_at.in_time_zone(@event.tz).strftime("%b %-d, %-l:%M %p") %></td>
+          <td class="muted small">
+            <%= r.confirmation_sent_at ? "confirmed ✓" : "confirmation pending" %><br>
+            <%= r.reminder_sent_at ? "reminder ✓" : "" %>
+          </td>
+          <td><%= button_to "Remove", admin_event_rsvp_path(@event, r), method: :delete, class: "btn btn-small btn-danger",
+                    form: { data: { turbo_confirm: "Remove #{r.name}'s RSVP?" } } %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

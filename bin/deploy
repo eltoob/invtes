@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Deploy to the Hetzner box: rsync the working tree, install gems, precompile
+# assets, migrate, restart Puma. Requires the `invites-hetzner` SSH alias.
+set -euo pipefail
+HOST="${DEPLOY_HOST:-invites-hetzner}"
+DIR="${DEPLOY_DIR:-/root/invites}"
+
+cd "$(dirname "$0")/.."
+rsync -az --delete \
+  --exclude .git --exclude .bundle --exclude 'vendor/bundle' \
+  --exclude 'log/*' --exclude 'tmp/*' --exclude 'storage/*' \
+  --exclude node_modules --exclude '.env*' --exclude public/assets \
+  ./ "$HOST:$DIR/"
+
+ssh "$HOST" bash -s <<REMOTE
+set -euo pipefail
+cd $DIR
+set -a; . /etc/invites.env; set +a
+bundle config set --local deployment true >/dev/null
+bundle config set --local without 'development test' >/dev/null
+bundle install --quiet
+bundle exec rails assets:precompile >/dev/null
+bundle exec rails db:migrate
+systemctl restart invites
+sleep 5
+systemctl is-active invites
+curl -fsS -o /dev/null -w 'health /up -> %{http_code}\n' http://127.0.0.1:3000/up
+REMOTE
