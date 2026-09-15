@@ -41,6 +41,10 @@
     <div class="rsvp-success__mark">✓</div>
     <h3 data-rsvp-target="successTitle"></h3>
     <p data-rsvp-target="successMessage"></p>
+    <div class="rsvp-calendar" data-rsvp-target="calendar" hidden>
+      <a class="rsvp-submit rsvp-calendar__button" href="<%= invitation_calendar_path(event.slug) %>" download="<%= event.slug %>.ics">📅 Add to my calendar</a>
+      <a class="rsvp-link rsvp-calendar__google" href="<%= EventCalendar.new(event, url: invitation_url(event.slug)).google_url %>" target="_blank" rel="noopener">Use Google Calendar instead</a>
+    </div>
     <button type="button" class="rsvp-link" data-action="click->rsvp#reset">Change my answer</button>
   </div>
 </div>

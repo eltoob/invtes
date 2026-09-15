@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 // Submits the RSVP form as JSON and swaps in a thank-you state.
 export default class extends Controller {
-  static targets = ["form", "guests", "error", "submit", "success", "successTitle", "successMessage"]
+  static targets = ["form", "guests", "error", "submit", "success", "successTitle", "successMessage", "calendar"]
   static values = { url: String }
 
   connect() { this.toggleGuests() }
@@ -29,6 +29,7 @@ export default class extends Controller {
 
       this.successTitleTarget.textContent = data.attending ? `See you there, ${data.name}!` : `We'll miss you, ${data.name}.`
       this.successMessageTarget.textContent = data.message
+      this.calendarTarget.hidden = !data.attending
       this.formTarget.hidden = true
       this.successTarget.hidden = false
       this.successTarget.scrollIntoView({ behavior: "smooth", block: "center" })

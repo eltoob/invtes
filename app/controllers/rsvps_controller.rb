@@ -18,7 +18,7 @@ class RsvpsController < ApplicationController
         attending: rsvp.attending?,
         name: rsvp.first_name,
         guests_count: rsvp.guests_count,
-        message: rsvp.attending? ? "You're in! A confirmation text is on its way." : "Sorry you can't make it. We've noted it."
+        message: confirmation_message(rsvp)
       }
     else
       render json: { ok: false, errors: rsvp.errors.full_messages }, status: :unprocessable_entity
@@ -26,6 +26,11 @@ class RsvpsController < ApplicationController
   end
 
   private
+
+  def confirmation_message(rsvp)
+    return "Sorry you can't make it. We've noted it." unless rsvp.attending?
+    SmsSender.new.configured? ? "You're in! A confirmation text is on its way." : "You're in! We've saved your spot."
+  end
 
   def rsvp_params
     p = params.require(:rsvp).permit(:name, :phone, :attending, :guests_count, :note)

@@ -19,4 +19,6 @@ Rails.application.routes.draw do
                       constraints: { slug: /[a-z0-9]+(?:-[a-z0-9]+)*/ }
   post "/:slug/rsvp", to: "rsvps#create",      as: :invitation_rsvp,
                       constraints: { slug: /[a-z0-9]+(?:-[a-z0-9]+)*/ }
+  get  "/:slug/calendar", to: "calendars#show", as: :invitation_calendar,
+                      constraints: { slug: /[a-z0-9]+(?:-[a-z0-9]+)*/ }, defaults: { format: :ics }
 end
