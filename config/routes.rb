@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root to: "events#index"
-    resources :events, only: [ :index, :show ] do
+    resources :events, only: [ :index, :show, :edit, :update ] do
       member do
         get :export, defaults: { format: :csv }
         post :send_reminders

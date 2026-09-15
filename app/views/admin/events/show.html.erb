@@ -9,6 +9,7 @@
     </p>
   </div>
   <div class="actions">
+    <%= link_to "Edit", edit_admin_event_path(@event), class: "btn" %>
     <%= link_to "Export CSV", export_admin_event_path(@event, format: :csv), class: "btn" %>
     <%= button_to "Send reminders now", send_reminders_admin_event_path(@event), class: "btn btn-primary",
           form: { data: { turbo_confirm: "Text a reminder to every attending guest who hasn't received one?" } } %>

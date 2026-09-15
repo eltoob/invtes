@@ -1,0 +1,66 @@
+<p><%= link_to "← Back to #{@event.name}", admin_event_path(@event) %></p>
+<h1>Edit event</h1>
+
+<%= form_with model: [ :admin, @event ], class: "form" do |f| %>
+  <% if @event.errors.any? %>
+    <div class="flash alert">
+      <ul>
+        <% @event.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %>
+    <%= f.text_field :name, required: true %>
+  </div>
+
+  <div class="field-row">
+    <div class="field">
+      <%= f.label :starts_at, "Starts" %>
+      <%= f.datetime_local_field :starts_at, value: @event.local_starts_at&.strftime("%Y-%m-%dT%H:%M"), required: true %>
+    </div>
+    <div class="field">
+      <%= f.label :ends_at, "Ends (optional)" %>
+      <%= f.datetime_local_field :ends_at, value: @event.local_ends_at&.strftime("%Y-%m-%dT%H:%M") %>
+    </div>
+    <div class="field">
+      <%= f.label :timezone, "Time zone" %>
+      <%= f.select :timezone, ActiveSupport::TimeZone.all.map { |z| [ "#{z.name} (#{z.tzinfo.name})", z.tzinfo.name ] }.uniq(&:last) %>
+    </div>
+  </div>
+  <p class="muted small">Times are local to the event's time zone.</p>
+
+  <div class="field">
+    <%= f.label :location %>
+    <%= f.text_field :location %>
+  </div>
+
+  <div class="field">
+    <%= f.label :details %>
+    <%= f.text_area :details, rows: 4 %>
+  </div>
+
+  <h2>Reminder text</h2>
+  <div class="field">
+    <%= f.label :reminder_at, "Send reminders at" %>
+    <%= f.datetime_local_field :reminder_at, value: @event.reminder_at&.in_time_zone(@event.tz)&.strftime("%Y-%m-%dT%H:%M") %>
+    <p class="muted small">Leave blank to reset to the default: 10:00 AM the day before the event.</p>
+  </div>
+  <div class="field">
+    <%= f.label :reminder_message, "Message (optional)" %>
+    <%= f.text_area :reminder_message, rows: 3, placeholder: "Hi %{name}! Reminder: %{event} is tomorrow, %{when}%{where}. See you there!" %>
+    <p class="muted small">Placeholders: %{name}, %{event}, %{when}, %{where}, %{date}, %{guests}.</p>
+  </div>
+  <% if @event.reminder_sent_at %>
+    <div class="field field-check">
+      <%= check_box_tag "event[reset_reminder]", "1", false, id: "event_reset_reminder" %>
+      <%= label_tag "event_reset_reminder", "Reminders already went out #{time_ago_in_words(@event.reminder_sent_at)} ago. Send them again at the new reminder time." %>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= f.submit "Save changes", class: "btn btn-primary" %>
+    <%= link_to "Cancel", admin_event_path(@event), class: "btn" %>
+  </div>
+<% end %>

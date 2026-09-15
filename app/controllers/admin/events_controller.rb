@@ -30,7 +30,36 @@ module Admin
       redirect_to admin_event_path(@event), notice: "Queued reminder texts for #{count} #{'guest'.pluralize(count)}."
     end
 
+    def edit
+    end
+
+    def update
+      if @event.update(event_attributes)
+        redirect_to admin_event_path(@event), notice: "Event updated."
+      else
+        render :edit, status: :unprocessable_entity
+      end
+    end
+
+    LOCAL_TIME_FIELDS = %i[starts_at ends_at reminder_at].freeze
+    private_constant :LOCAL_TIME_FIELDS
+
     private
+
+    # Times are entered on the form as local wall-clock times in the event's
+    # time zone (datetime-local inputs carry no zone), so parse them in the zone
+    # being saved. A blank reminder time falls back to the model default.
+    def event_attributes
+      attrs = params.require(:event).permit(:name, :timezone, :location, :details, :reminder_message,
+                                            :reset_reminder, *LOCAL_TIME_FIELDS).to_h.symbolize_keys
+      zone = ActiveSupport::TimeZone[attrs[:timezone].to_s] || @event.tz
+      LOCAL_TIME_FIELDS.each do |field|
+        next unless attrs.key?(field)
+        attrs[field] = attrs[field].present? ? zone.parse(attrs[field]) : nil
+      end
+      attrs[:reminder_sent_at] = nil if attrs.delete(:reset_reminder) == "1"
+      attrs
+    end
 
     def set_event
       @event = Event.find_by!(slug: params[:id])

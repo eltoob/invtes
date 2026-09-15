@@ -32,3 +32,18 @@ h2 { font-size: 1.15rem; margin: 2rem 0 .75rem; }
 .flash.notice { background: #e7f5ea; color: #2f6b3a; }
 .flash.alert { background: #fee4e2; color: #b42318; }
 code { background: #eef0f3; padding: .1rem .3rem; border-radius: .25rem; }
+.form { max-width: 40rem; }
+.form .field { margin-bottom: 1rem; }
+.form .field-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+.form .field-row .field { flex: 1 1 12rem; }
+.form label { display: block; font-weight: 600; font-size: .85rem; margin-bottom: .3rem; }
+.form input[type="text"], .form input[type="datetime-local"], .form select, .form textarea {
+  width: 100%; font: inherit; padding: .5rem .65rem; border: 1px solid #d0d5dd; border-radius: .5rem; background: #fff;
+}
+.form textarea { resize: vertical; }
+.form .field p { margin: .3rem 0 0; }
+.form .field-check { display: flex; gap: .5rem; align-items: flex-start; }
+.form .field-check input { margin-top: .2rem; }
+.form .field-check label { font-weight: 500; margin: 0; }
+.form .actions { margin-top: 1.5rem; }
+.flash ul { margin: 0; padding-left: 1.2rem; }
