@@ -20,7 +20,7 @@
     <div class="rsvp-field">
       <%= f.label :phone, "Mobile number" %>
       <%= f.telephone_field :phone, required: true, autocomplete: "tel", inputmode: "tel", placeholder: "(555) 123-4567" %>
-      <small>We'll text you a confirmation and a reminder the day before.</small>
+      <small>So we can reach you if plans change.</small>
     </div>
 
     <div class="rsvp-field" data-rsvp-target="guests">
@@ -42,6 +42,12 @@
     <h3 data-rsvp-target="successTitle"></h3>
     <p data-rsvp-target="successMessage"></p>
     <div class="rsvp-calendar" data-rsvp-target="calendar" hidden>
+      <% if event.location.present? %>
+        <p class="rsvp-success__where">
+          <%= event.local_starts_at.strftime("%A, %B %-d at %-l:%M %p") %><br>
+          <a href="https://maps.google.com/?q=<%= u(event.location) %>" target="_blank" rel="noopener"><%= event.location %></a>
+        </p>
+      <% end %>
       <a class="rsvp-submit rsvp-calendar__button" href="<%= invitation_calendar_path(event.slug) %>" download="<%= event.slug %>.ics">📅 Add to my calendar</a>
       <a class="rsvp-link rsvp-calendar__google" href="<%= EventCalendar.new(event, url: invitation_url(event.slug)).google_url %>" target="_blank" rel="noopener">Use Google Calendar instead</a>
     </div>

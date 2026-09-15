@@ -11,8 +11,8 @@ class RsvpsController < ApplicationController
 
     answer_changed = rsvp.new_record? || rsvp.attending_changed? || rsvp.guests_count_changed?
     if rsvp.save
-      # Text a confirmation on first RSVP, and again if they change their answer.
-      SendRsvpConfirmationJob.perform_later(rsvp) if answer_changed
+      # Text a confirmation on first RSVP, and again if they change their answer (only when Twilio is set up).
+      SendRsvpConfirmationJob.perform_later(rsvp) if answer_changed && SmsSender.new.configured?
       render json: {
         ok: true,
         attending: rsvp.attending?,
@@ -29,7 +29,7 @@ class RsvpsController < ApplicationController
 
   def confirmation_message(rsvp)
     return "Sorry you can't make it. We've noted it." unless rsvp.attending?
-    SmsSender.new.configured? ? "You're in! A confirmation text is on its way." : "You're in! We've saved your spot."
+    "You're in! We've saved your spot."
   end
 
   def rsvp_params

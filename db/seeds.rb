@@ -24,7 +24,7 @@ Event.find_or_create_by!(slug: "eitan") do |e|
   e.timezone = "America/Los_Angeles"
   e.starts_at = ActiveSupport::TimeZone[e.timezone].parse("2026-10-10 17:00")
   e.ends_at = ActiveSupport::TimeZone[e.timezone].parse("2026-10-10 22:00")
-  e.location = "9328 Kramerwood Place, Los Angeles, CA 90034"
+  e.location = "9328 Kramerwood Pl, Los Angeles, CA 90034"
   e.details = "A sleepover without the sleeping! Come in your PJs for pizza, games and a movie. Bring a pillow and your favorite stuffed animal."
   e.reminder_message = "Hi %{name}! Eitan's Birthday Sleepunder is tomorrow at %{when}%{where}. PJs on, pillow in hand! 🌙"
 end
