@@ -60,11 +60,11 @@
   <section class="eb-hero">
     <h1>Eitan's <span>Birthday</span><br>Sleepunder</h1>
     <p class="when">
-      <%= event.local_starts_at.strftime("%A, %B %-d") %> · <%= event.local_starts_at.strftime("%-l %p") %><% if event.local_ends_at %> – <%= event.local_ends_at.strftime("%-l %p") %><% end %><br>
+      <%= event.local_starts_at.strftime("%A, %B %-d") %> · <%= short_time(event.local_starts_at) %><% if event.local_ends_at %> – <%= short_time(event.local_ends_at) %><% end %><br>
       <a href="https://maps.google.com/?q=<%= u(event.location) %>" target="_blank" rel="noopener"><%= event.location %></a>
     </p>
     <div class="eb-badges">
-      <span>🍕 Pizza</span><span>🎮 Games</span><span>🎬 Movie</span><span>🎂 Cake</span><span>🧸 Bring a pillow</span>
+      <span>🍕 Pizza</span><span>🎮 Games</span><span>🎬 Movie</span><span>🎂 Cake</span><span>🧥 Maybe bring a sweater</span>
     </div>
     <div class="eb-countdown" data-starts-at="<%= event.starts_at.iso8601 %>">
       <div><b data-unit="days">0</b><span>days</span></div>

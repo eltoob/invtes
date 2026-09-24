@@ -39,7 +39,9 @@ body.invitation-body { margin: 0; font-family: "Inter", system-ui, -apple-system
 .rsvp-success__where { margin: 0; line-height: 1.5; opacity: 1; }
 .rsvp-success__where a { color: inherit; }
 .rsvp-calendar { display: flex; flex-direction: column; align-items: center; gap: .6rem; margin: 0 auto 1.25rem; }
-.rsvp-calendar__button { display: inline-block; min-width: 14rem; text-align: center; text-decoration: none; }
+.rsvp-calendar__google { display: inline-flex; align-items: center; justify-content: center; gap: .75rem; min-width: 16rem; padding: 1rem 1.5rem; font: inherit; font-size: 1.1rem; font-weight: 600; color: #1c1c1c; background: #fff; border: 2px solid #dadce0; border-radius: .75rem; text-decoration: none; cursor: pointer; transition: transform .1s, box-shadow .15s; }
+.rsvp-calendar__google:hover { transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0, 0, 0, .15); }
+.rsvp-calendar__google svg { width: 1.5rem; height: 1.5rem; flex-shrink: 0; }
 a.rsvp-link { color: inherit; display: inline-block; }
 [hidden] { display: none !important; }
 
