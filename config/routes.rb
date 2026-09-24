@@ -21,4 +21,6 @@ Rails.application.routes.draw do
                       constraints: { slug: /[a-z0-9]+(?:-[a-z0-9]+)*/ }
   get  "/:slug/calendar", to: "calendars#show", as: :invitation_calendar,
                       constraints: { slug: /[a-z0-9]+(?:-[a-z0-9]+)*/ }, defaults: { format: :ics }
+  get  "/:slug/preview.jpg", to: "previews#show", as: :invitation_preview,
+                      constraints: { slug: /[a-z0-9]+(?:-[a-z0-9]+)*/ }, format: false
 end
