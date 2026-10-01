@@ -52,7 +52,7 @@ group :development do
 end
 
 # SMS delivery (RSVP confirmations + day-before reminders)
-gem "twilio-ruby", "~> 7.4"
+gem "twilio-ruby", "~> 7.11"
 # Phone number parsing / E.164 normalization
 gem "phonelib", "~> 0.10"
 # CSV export of RSVPs (no longer a default gem in Ruby 3.4)
