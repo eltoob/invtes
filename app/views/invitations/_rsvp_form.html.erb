@@ -19,7 +19,8 @@
 
     <div class="rsvp-field">
       <%= f.label :phone, "Mobile number" %>
-      <%= f.telephone_field :phone, required: true, autocomplete: "tel", inputmode: "tel", placeholder: "(555) 123-4567" %>
+      <%= f.telephone_field :phone, required: true, autocomplete: "tel", inputmode: "tel", placeholder: "(555) 123-4567",
+            data: { controller: "phone-format", action: "input->phone-format#format" } %>
       <small>So we can reach you if plans change.</small>
     </div>
 
