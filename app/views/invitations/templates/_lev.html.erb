@@ -1,0 +1,154 @@
+<%# Custom page for /lev — a Captain America birthday mission. The shield is drawn in SVG (no licensed artwork). %>
+<% content_for :title, "#{event.name} 🛡️" %>
+<% content_for :head do %>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    .ca, .ca-intro { --navy: #0b1d4f; --navy-2: #14307a; --red: #d7263d; --red-2: #b0182d; --white: #ffffff; --silver: #dfe6f3; --gold: #ffd166; --ink: #0d1530; }
+    .ca-body { background: radial-gradient(1200px 600px at 50% -10%, #23439c 0%, transparent 60%), linear-gradient(180deg, #08153b 0%, var(--navy) 50%, #0a1a46 100%);
+      min-height: 100vh; font-family: "Fredoka", system-ui, sans-serif; color: #fff; position: relative; overflow-x: hidden; }
+    .ca-sky { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .ca-stripes { position: absolute; left: 0; right: 0; bottom: 0; height: 38vh; opacity: .1;
+      background: repeating-linear-gradient(180deg, var(--red) 0 28px, var(--white) 28px 56px); mask-image: linear-gradient(180deg, transparent, #000); -webkit-mask-image: linear-gradient(180deg, transparent, #000); }
+    .ca-star { position: absolute; color: #fff; animation: twinkle ease-in-out infinite; line-height: 1; }
+    @keyframes twinkle { 0%, 100% { opacity: .25; transform: scale(.8); } 50% { opacity: 1; transform: scale(1.25); } }
+
+    .ca-hero { position: relative; text-align: center; padding: 3.5rem 1.5rem 2.5rem; }
+    .ca-shield { width: min(210px, 52vw); height: auto; display: block; margin: 0 auto 1rem; filter: drop-shadow(0 18px 30px rgba(0,0,0,.45));
+      animation: shield-spin 5s cubic-bezier(.5,0,.3,1) infinite; }
+    @keyframes shield-spin { 0%, 70% { transform: rotate(0deg) translateY(0); } 85% { transform: rotate(360deg) translateY(-10px); } 100% { transform: rotate(360deg) translateY(0); } }
+    .ca-hero .eyebrow { letter-spacing: .3em; text-transform: uppercase; font-size: .85rem; color: var(--gold); font-weight: 600; }
+    .ca-hero h1 { font-family: "Bangers", "Fredoka", sans-serif; font-weight: 400; letter-spacing: .04em; font-size: clamp(3rem, 12vw, 6.5rem); line-height: .95; margin: .4rem 0 .9rem;
+      text-shadow: 4px 4px 0 var(--red), 8px 8px 0 rgba(0,0,0,.35); }
+    .ca-hero h1 span { color: var(--gold); }
+    .ca-hero .when { font-size: 1.3rem; line-height: 1.6; }
+    .ca-hero .when a { color: var(--silver); text-decoration: none; border-bottom: 2px dotted var(--red); }
+    .ca-badges { display: flex; flex-wrap: wrap; gap: .6rem; justify-content: center; margin-top: 1.5rem; }
+    .ca-badges span { background: rgba(255,255,255,.1); border: 2px solid rgba(255,255,255,.28); border-radius: 999px; padding: .45rem 1rem; font-size: .95rem; }
+    .ca-countdown { display: flex; gap: 1rem; justify-content: center; margin: 2rem auto 0; }
+    .ca-countdown div { min-width: 4.4rem; background: var(--red); border: 3px solid #fff; border-radius: 1rem; padding: .7rem .5rem; box-shadow: 0 10px 20px -8px rgba(0,0,0,.5); }
+    .ca-countdown b { display: block; font-family: "Bangers", sans-serif; font-weight: 400; font-size: 2.4rem; line-height: 1; letter-spacing: .03em; }
+    .ca-countdown span { font-size: .68rem; letter-spacing: .2em; text-transform: uppercase; opacity: .9; }
+
+    .ca-card { position: relative; max-width: 32rem; margin: 0 auto 4rem; padding: 2.5rem; background: #fff; color: var(--ink); border-radius: 1.5rem;
+      border-top: 10px solid var(--red); box-shadow: 0 40px 80px -30px rgba(0,0,0,.65); }
+    .ca-card h2 { font-family: "Bangers", sans-serif; font-weight: 400; letter-spacing: .04em; font-size: 2.4rem; line-height: 1.05; margin: 0 0 .5rem; text-align: center; color: var(--navy); }
+    .ca-card .sub { text-align: center; margin: 0 0 1.5rem; color: #4d5672; }
+    .ca-card .rsvp-submit { background: var(--red); }
+    .ca-card .rsvp-submit:hover { background: var(--red-2); }
+    .ca-card .rsvp-toggle__option input:checked + span { background: var(--navy); color: #fff; }
+    .ca-footer { position: relative; text-align: center; padding: 0 1.5rem 3rem; opacity: .75; font-size: .95rem; }
+
+    /* Intro: the shield flies in spinning, a burst of stars, then the page appears */
+    .ca-intro { position: fixed; inset: 0; z-index: 50; background: var(--navy); display: grid; place-items: center; overflow: hidden; }
+    .ca-intro svg { width: min(320px, 70vw); height: auto; animation: intro-throw 1.5s cubic-bezier(.2,.8,.3,1) forwards; filter: drop-shadow(0 20px 40px rgba(0,0,0,.5)); }
+    @keyframes intro-throw { 0% { transform: translateX(-120vw) rotate(-900deg) scale(.5); } 75% { transform: translateX(0) rotate(0deg) scale(1.08); } 100% { transform: scale(1); } }
+    .ca-intro__word { position: absolute; bottom: 18%; font-family: "Bangers", sans-serif; font-size: clamp(2rem, 9vw, 4rem); letter-spacing: .06em; color: var(--gold);
+      text-shadow: 3px 3px 0 var(--red); opacity: 0; animation: word-pop .5s 1.3s cubic-bezier(.3,1.6,.6,1) forwards; }
+    @keyframes word-pop { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: scale(1); } }
+    .ca-burst { position: absolute; left: 50%; top: 50%; font-size: 1.6rem; opacity: 0; animation: burst .9s 1.2s ease-out forwards; }
+    @keyframes burst { 0% { opacity: 1; transform: translate(-50%, -50%) scale(.3); } 100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.2); } }
+    .ca-intro.is-clearing { animation: intro-clear .7s ease-in forwards; }
+    @keyframes intro-clear { to { transform: scale(1.4); opacity: 0; } }
+    .ca-intro.is-done { display: none; }
+    @media (prefers-reduced-motion: reduce) { .ca-intro { display: none; } .ca-shield { animation: none; } }
+  </style>
+<% end %>
+
+<% shield = capture do %>
+  <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Star shield">
+    <defs>
+      <radialGradient id="ca-shine" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#fff" stop-opacity=".45"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    </defs>
+    <circle cx="100" cy="100" r="98" fill="#d7263d"/>
+    <circle cx="100" cy="100" r="78" fill="#f4f6fb"/>
+    <circle cx="100" cy="100" r="58" fill="#d7263d"/>
+    <circle cx="100" cy="100" r="40" fill="#14307a"/>
+    <polygon fill="#ffffff" points="100,64 108.5,88.3 134.2,88.9 113.8,104.5 121.2,129.1 100,114.5 78.8,129.1 86.2,104.5 65.8,88.9 91.5,88.3"/>
+    <circle cx="100" cy="100" r="98" fill="url(#ca-shine)"/>
+  </svg>
+<% end %>
+
+<div class="ca-intro" id="intro" aria-hidden="true">
+  <%= shield %>
+  <div class="ca-intro__word">Avengers, assemble!</div>
+</div>
+
+<div class="ca ca-body">
+  <div class="ca-sky" id="sky"><div class="ca-stripes"></div></div>
+
+  <section class="ca-hero">
+    <div class="ca-shield"><%= shield %></div>
+    <div class="eyebrow">Top secret mission</div>
+    <h1>Lev's <span>Birthday</span><br>Mission</h1>
+    <p class="when">
+      <%= event.local_starts_at.strftime("%A, %B %-d") %> · <%= short_time(event.local_starts_at) %><% if event.local_ends_at %> – <%= short_time(event.local_ends_at) %><% end %><br>
+      <a href="https://maps.google.com/?q=<%= u(event.location) %>" target="_blank" rel="noopener"><%= event.location %></a>
+    </p>
+    <div class="ca-badges">
+      <span>🦸 Come as a superhero</span><span>🛡️ Shield training</span><span>🍕 Pizza</span><span>🎂 Cake</span><span>🎉 Games</span>
+    </div>
+    <div class="ca-countdown" data-starts-at="<%= event.starts_at.iso8601 %>">
+      <div><b data-unit="days">0</b><span>days</span></div>
+      <div><b data-unit="hours">0</b><span>hours</span></div>
+      <div><b data-unit="minutes">0</b><span>min</span></div>
+      <div><b data-unit="seconds">0</b><span>sec</span></div>
+    </div>
+  </section>
+
+  <section class="ca-card">
+    <h2>Will you join the team?</h2>
+    <p class="sub"><%= event.details %></p>
+    <%= render "invitations/rsvp_form", event: event, rsvp: rsvp %>
+  </section>
+
+  <p class="ca-footer">Mission HQ: <%= event.location %> ⭐</p>
+</div>
+
+<script>
+  // Stars drifting in the background
+  (function () {
+    var sky = document.getElementById("sky");
+    for (var i = 0; i < 45; i++) {
+      var s = document.createElement("span");
+      s.className = "ca-star";
+      s.textContent = "★";
+      s.style.left = Math.random() * 100 + "%";
+      s.style.top = Math.random() * 100 + "%";
+      s.style.fontSize = 0.5 + Math.random() * 1.1 + "rem";
+      s.style.color = ["#ffffff", "#ffffff", "#ff6b7d", "#ffd166"][i % 4];
+      s.style.animationDuration = 2 + Math.random() * 4 + "s";
+      s.style.animationDelay = -Math.random() * 4 + "s";
+      sky.appendChild(s);
+    }
+  })();
+  // Intro: shield thrown in, star burst, then clear
+  (function () {
+    var intro = document.getElementById("intro");
+    for (var i = 0; i < 16; i++) {
+      var b = document.createElement("span");
+      b.className = "ca-burst";
+      b.textContent = "★";
+      b.style.color = i % 2 ? "#ffffff" : "#ffd166";
+      var a = (i / 16) * Math.PI * 2, d = 160 + Math.random() * 120;
+      b.style.setProperty("--dx", Math.cos(a) * d + "px");
+      b.style.setProperty("--dy", Math.sin(a) * d + "px");
+      intro.appendChild(b);
+    }
+    setTimeout(function () { intro.classList.add("is-clearing"); }, 2600);
+    setTimeout(function () { intro.classList.add("is-done"); }, 3300);
+  })();
+  // Countdown
+  (function () {
+    var el = document.querySelector(".ca-countdown");
+    var target = new Date(el.dataset.startsAt).getTime();
+    function tick() {
+      var d = Math.max(0, target - Date.now());
+      el.querySelector('[data-unit="days"]').textContent = Math.floor(d / 864e5);
+      el.querySelector('[data-unit="hours"]').textContent = Math.floor(d / 36e5) % 24;
+      el.querySelector('[data-unit="minutes"]').textContent = Math.floor(d / 6e4) % 60;
+      el.querySelector('[data-unit="seconds"]').textContent = Math.floor(d / 1e3) % 60;
+    }
+    tick(); setInterval(tick, 1000);
+  })();
+</script>

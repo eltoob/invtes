@@ -12,7 +12,7 @@ class EventPreviewImage
   WIDTH = 1200
   HEIGHT = 630
   VERSION = 1 # bump after changing the artwork so cached cards re-render
-  THEMES = { "eitan" => :night }.freeze
+  THEMES = { "eitan" => :night, "lev" => :shield }.freeze
 
   # Static instances from Google Fonts (SIL Open Font License), in vendor/fonts.
   FONT_FILES = {
@@ -110,6 +110,58 @@ class EventPreviewImage
         <rect x="1.5" y="1.5" width="#{w - 3}" height="#{h - 3}" rx="#{(h - 3) / 2.0}" fill="#ffffff" fill-opacity=".1" stroke="#ffffff" stroke-opacity=".3" stroke-width="2"/>
       </svg>
     SVG
+  end
+
+  # --- Star shield (Lev's Captain America party) ----------------------------
+
+  def shield_center_y = 330
+
+  def shield_layers
+    [
+      [ text("TOP SECRET MISSION", font: "Fredoka SemiBold", size: 24, color: "#ffd166", tracking: 6), 0 ],
+      [ fit(@event.name, font: "Fredoka Bold", sizes: [ 88, 78, 68, 60 ], max_height: 220, color: "#ffffff", line_height: 0.98), 16 ],
+      [ pill(text(when_text, font: "Fredoka SemiBold", size: 34, color: "#ffffff")), 28 ]
+    ]
+  end
+
+  def shield_background
+    rng = Random.new(11)
+    stars = Array.new(40) do
+      x, y = rng.rand(WIDTH), rng.rand(HEIGHT)
+      x, y = rng.rand(WIDTH), rng.rand(HEIGHT) while (240..960).cover?(x) && (20..510).cover?(y) # keep the text clear
+      star_path(x, y, (5 + rng.rand * 9).round(1), fill: %w[#ffffff #ffffff #ff6b7d #ffd166].sample(random: rng), opacity: (0.25 + rng.rand * 0.6).round(2))
+    end
+    stripes = (0..12).map { |i| %(<rect x="0" y="#{i * 48}" width="#{WIDTH}" height="24" fill="#d7263d"/>) }
+
+    <<~SVG
+      <svg xmlns="http://www.w3.org/2000/svg" width="#{WIDTH}" height="#{HEIGHT}">
+        <defs>
+          <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#08153b"/><stop offset=".55" stop-color="#0b1d4f"/><stop offset="1" stop-color="#14307a"/>
+          </linearGradient>
+          #{radial("glow", "#3d63d6", 0.45)}
+          #{radial("redglow", "#d7263d", 0.3)}
+        </defs>
+        <rect width="#{WIDTH}" height="#{HEIGHT}" fill="url(#bg)"/>
+        <g opacity=".07">#{stripes.join}</g>
+        <circle cx="600" cy="300" r="520" fill="url(#glow)"/>
+        <circle cx="1120" cy="620" r="360" fill="url(#redglow)"/>
+        #{stars.join}
+        <g transform="translate(600 92)">
+          <circle r="62" fill="#d7263d"/><circle r="49" fill="#f4f6fb"/><circle r="36" fill="#d7263d"/><circle r="25" fill="#14307a"/>
+          #{star_path(0, 0, 22, fill: "#ffffff")}
+        </g>
+      </svg>
+    SVG
+  end
+
+  def star_path(cx, cy, r, fill:, opacity: 1)
+    points = (0...10).map do |i|
+      radius = i.even? ? r : r * 0.4
+      angle = (-90 + 36 * i) * Math::PI / 180
+      "#{(cx + radius * Math.cos(angle)).round(1)},#{(cy + radius * Math.sin(angle)).round(1)}"
+    end
+    %(<polygon points="#{points.join(" ")}" fill="#{fill}" fill-opacity="#{opacity}"/>)
   end
 
   # --- Classic (every other event) ------------------------------------------

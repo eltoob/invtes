@@ -29,4 +29,14 @@ Event.find_or_create_by!(slug: "eitan") do |e|
   e.reminder_message = "Hi %{name}! Eitan's Birthday Sleepunder is tomorrow at %{when}%{where}. PJs on, and maybe bring a sweater! 🌙"
 end
 
+Event.find_or_create_by!(slug: "lev") do |e|
+  e.name = "Lev's Captain America Birthday"
+  e.timezone = "America/Los_Angeles"
+  e.starts_at = ActiveSupport::TimeZone[e.timezone].parse("2026-11-15 15:00")
+  e.ends_at = ActiveSupport::TimeZone[e.timezone].parse("2026-11-15 18:00")
+  e.location = "9328 Kramerwood Pl, Los Angeles, CA 90034"
+  e.details = "Avengers, assemble! Come dressed as your favorite superhero for shield training, games, pizza and cake."
+  e.reminder_message = "Hi %{name}! Lev's Captain America Birthday is tomorrow, %{when}%{where}. Suit up, hero! 🛡️"
+end
+
 puts "Seeded #{Event.count} events: #{Event.pluck(:slug).join(', ')}"
