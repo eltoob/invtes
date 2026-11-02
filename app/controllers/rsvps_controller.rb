@@ -10,7 +10,10 @@ class RsvpsController < ApplicationController
     rsvp.guests_count = 0 unless rsvp.attending?
 
     answer_changed = rsvp.new_record? || rsvp.attending_changed? || rsvp.guests_count_changed?
+    was_new = rsvp.new_record?
     if rsvp.save
+      # Email the hosts about every RSVP (when RSVP_NOTIFY_EMAILS is set).
+      RsvpMailer.notify(rsvp, updated: !was_new).deliver_later if RsvpMailer.enabled?
       # Text a confirmation on first RSVP, and again if they change their answer (only when Twilio is set up).
       SendRsvpConfirmationJob.perform_later(rsvp) if answer_changed && SmsSender.new.configured?
       render json: {

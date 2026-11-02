@@ -1,0 +1,15 @@
+<%= @updated ? "#{@rsvp.name} changed their RSVP" : "#{@rsvp.name} just RSVP'd" %> for <%= @event.name %>.
+
+Coming: <%= @rsvp.attending? ? "Yes" : "No" %>
+<% if @rsvp.attending? -%>
+Extra guests: <%= @rsvp.guests_count %> (party of <%= @rsvp.party_size %>)
+<% end -%>
+Phone: <%= @rsvp.formatted_phone %>
+<% if @rsvp.note.present? -%>
+Note: <%= @rsvp.note %>
+<% end -%>
+
+Headcount so far: <%= @event.headcount %> (<%= @event.attending_rsvps.count %> yes, <%= @event.rsvps.where(attending: false).count %> no)
+
+Invite: https://eitan.duckdns.org/<%= @event.slug %>
+Guest list: https://eitan.duckdns.org/admin

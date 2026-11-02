@@ -1,0 +1,13 @@
+<p><strong><%= @rsvp.name %></strong> <%= @updated ? "changed their RSVP" : "just RSVP'd" %> for <strong><%= @event.name %></strong>.</p>
+<table cellpadding="4" style="border-collapse:collapse">
+  <tr><td>Coming</td><td><strong><%= @rsvp.attending? ? "Yes" : "No" %></strong></td></tr>
+  <% if @rsvp.attending? %>
+  <tr><td>Extra guests</td><td><%= @rsvp.guests_count %> (party of <%= @rsvp.party_size %>)</td></tr>
+  <% end %>
+  <tr><td>Phone</td><td><%= @rsvp.formatted_phone %></td></tr>
+  <% if @rsvp.note.present? %>
+  <tr><td>Note</td><td><%= @rsvp.note %></td></tr>
+  <% end %>
+</table>
+<p>Headcount so far: <strong><%= @event.headcount %></strong> (<%= @event.attending_rsvps.count %> yes, <%= @event.rsvps.where(attending: false).count %> no)</p>
+<p><a href="https://eitan.duckdns.org/<%= @event.slug %>">Invite</a> · <a href="https://eitan.duckdns.org/admin">Guest list</a></p>
