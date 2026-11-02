@@ -4,11 +4,11 @@
     <div class="rsvp-toggle" role="radiogroup" aria-label="Will you attend?">
       <label class="rsvp-toggle__option">
         <%= f.radio_button :attending, true, checked: true, "data-action": "change->rsvp#toggleGuests" %>
-        <span>Joyfully accept</span>
+        <span>Accept</span>
       </label>
       <label class="rsvp-toggle__option">
         <%= f.radio_button :attending, false, "data-action": "change->rsvp#toggleGuests" %>
-        <span>Regretfully decline</span>
+        <span>Decline</span>
       </label>
     </div>
 

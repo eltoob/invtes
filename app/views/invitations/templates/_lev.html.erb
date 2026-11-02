@@ -86,13 +86,7 @@
       <a href="https://maps.google.com/?q=<%= u(event.location) %>" target="_blank" rel="noopener"><%= event.location %></a>
     </p>
     <div class="ca-badges">
-      <span>🦸 Come as a superhero</span><span>🛡️ Shield training</span><span>🍕 Pizza</span><span>🎂 Cake</span><span>🎉 Games</span>
-    </div>
-    <div class="ca-countdown" data-starts-at="<%= event.starts_at.iso8601 %>">
-      <div><b data-unit="days">0</b><span>days</span></div>
-      <div><b data-unit="hours">0</b><span>hours</span></div>
-      <div><b data-unit="minutes">0</b><span>min</span></div>
-      <div><b data-unit="seconds">0</b><span>sec</span></div>
+      <span>🦸 Come as a superhero</span><span>🍕 Pizza</span><span>🎂 Cake</span><span>🎉 Games</span>
     </div>
   </section>
 
@@ -137,18 +131,5 @@
     }
     setTimeout(function () { intro.classList.add("is-clearing"); }, 2600);
     setTimeout(function () { intro.classList.add("is-done"); }, 3300);
-  })();
-  // Countdown
-  (function () {
-    var el = document.querySelector(".ca-countdown");
-    var target = new Date(el.dataset.startsAt).getTime();
-    function tick() {
-      var d = Math.max(0, target - Date.now());
-      el.querySelector('[data-unit="days"]').textContent = Math.floor(d / 864e5);
-      el.querySelector('[data-unit="hours"]').textContent = Math.floor(d / 36e5) % 24;
-      el.querySelector('[data-unit="minutes"]').textContent = Math.floor(d / 6e4) % 60;
-      el.querySelector('[data-unit="seconds"]').textContent = Math.floor(d / 1e3) % 60;
-    }
-    tick(); setInterval(tick, 1000);
   })();
 </script>

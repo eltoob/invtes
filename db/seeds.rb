@@ -35,7 +35,7 @@ Event.find_or_create_by!(slug: "lev") do |e|
   e.starts_at = ActiveSupport::TimeZone[e.timezone].parse("2026-11-15 15:00")
   e.ends_at = ActiveSupport::TimeZone[e.timezone].parse("2026-11-15 17:00")
   e.location = "9328 Kramerwood Pl, Los Angeles, CA 90034"
-  e.details = "Avengers, assemble! Lev is turning 6! Come dressed as your favorite superhero for shield training, games, pizza and cake."
+  e.details = "Avengers, assemble! Lev is turning 6! Come dressed as your favorite superhero for games, pizza and cake."
   e.reminder_message = "Hi %{name}! Lev's Captain America 6th Birthday is tomorrow, %{when}%{where}. Suit up, hero! 🛡️"
 end
 
